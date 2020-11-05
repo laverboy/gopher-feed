@@ -1,0 +1,61 @@
+body {
+    font-family: 'Roboto', serif;
+}
+
+#wrapper {
+    width: 800px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.gopher {
+    width: 33%;
+    display: inline-block;
+}
+
+.score {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.gopher img {
+    width: 100%;
+    margin-top: -30%;
+}
+
+.blue h3.name {
+    color: #abc3d6;
+}
+
+.green h3.name {
+    color: #abd6b3;
+}
+
+.purple h3.name {
+    color: #c2a1d3;
+}
+
+.form input {
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 50px;
+    text-transform: uppercase;
+}
+
+.reset {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+.reset button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gopher Feed</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div id="app">
+    <div id="wrapper">
+        <div class="gophers">
+            <div class="gopher blue">
+                <p class="score">{{gophers.blue}}</p>
+                <img :src="gophers.blue ? 'images/gopher-blue.png' : 'images/gopher-dead.png'" alt="">
+                <h3 class="name">BLUE</h3>
+            </div>
+
+            <div class="gopher green">
+                <p class="score">{{gophers.green}}</p>
+                <img :src="gophers.green ? 'images/gopher-green.png' : 'images/gopher-dead.png'" alt="">
+                <h3 class="name">GREEN</h3>
+            </div>
+
+            <div class="gopher purple">
+                <p class="score">{{gophers.purple}}</p>
+                <img :src="gophers.purple ? 'images/gopher-purple.png' : 'images/gopher-dead.png'" alt="">
+                <h3 class="name">PURPLE</h3>
+            </div>
+        </div>
+        <div class="form">
+            <form v-on:submit.prevent="onSubmit">
+                <input v-model="input" placeholder="name a gopher to feed" type="text" :autofocus="'autofocus'">
+            </form>
+        </div>
+        <!--<div class="reset"><button v-on:click="reset">Reset</button></div>-->
+    </div>
+</div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            input: "",
+            gophers: {
+                blue: null,
+                green: null,
+                purple: null,
+            },
+            connection: null
+        },
+        created: function () {
+            console.log("Starting connection to WebSocket Server")
+            this.connection = new WebSocket("ws://localhost:3000/ws")
+
+            this.connection.onmessage = event => {
+                let newState = JSON.parse(event.data)
+
+                this.gophers.blue = newState.blue;
+                this.gophers.green = newState.green;
+                this.gophers.purple = newState.purple;
+            }
+
+            this.connection.onopen = function () {
+                console.log("Successfully connected to the websocket server...")
+            }
+        },
+        methods: {
+            onSubmit: function (event) {
+                ["blue", "green", "purple"].forEach(gopher => {
+                    if (this.input.toLowerCase() === gopher) {
+                        this.connection.send(JSON.stringify({Feed: gopher}))
+                    }
+                })
+                this.input = ""
+            },
+            feedGopher: function (gopher) {
+                // if gopher is greater than 75 then it is too full
+                if (this[gopher] > 75) {
+                    return;
+                }
+
+                this[gopher] = this[gopher] + 10;
+            },
+            reset: function () {
+                this.connection.send(JSON.stringify({Reset: true}))
+            }
+        }
+    })
+</script>
+</html>
